@@ -1,18 +1,19 @@
-const DocxMerger = require('./../src/index');
+import DocxMerger from '../dist/index.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const fs = require('fs');
-const path = require('path');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-(async () => {
-    const file1 = fs.readFileSync(path.resolve(__dirname, 'template.docx'), 'binary');
-    const file2 = fs.readFileSync(path.resolve(__dirname, 'template1.docx'), 'binary');
-    const docx = new DocxMerger();
-    await docx.initialize({},[file1,file2]);
-    //SAVING THE DOCX FILE
-    const data = await docx.save('nodebuffer');
-    await fs.writeFile("output.zip", data);
-    await fs.writeFile("output.docx", data);
-})()
+const file1 = fs.readFileSync(path.resolve(__dirname, 'template.docx'));
+const file2 = fs.readFileSync(path.resolve(__dirname, 'template1.docx'));
 
+console.log('Merging DOCX files using modern ESM API...');
 
+const merger = new DocxMerger();
+await merger.merge([file1, file2], { pageBreak: true });
 
+const outputBuffer = await merger.save('nodebuffer');
+fs.writeFileSync(path.resolve(__dirname, 'output.docx'), outputBuffer);
+
+console.log('Successfully merged documents into example/output.docx');

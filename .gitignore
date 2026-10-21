@@ -1,5 +1,11 @@
 node_modules/
-.idea/
-*.zip
-.vscode/
 dist/
+.idea/
+.vscode/
+*.zip
+*.log
+example/output.docx
+~$*
+coverage/
+.DS_Store
+Thumbs.db

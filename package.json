@@ -1,48 +1,61 @@
 {
   "name": "@hungtrinh2001/docx-merger",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "Apache-2.0",
-  "description": "Javascript Library for Merging Docx file in NodeJS and Browser Environment.",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "description": "High-performance TypeScript & JavaScript library for merging DOCX files with full OpenXML compliance.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
-    "validate": "echo \"Check For Test Coverage\" && exit 0",
-    "clean": "rimraf dist",
-    "build": "npm run clean && node build.js",
-    "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/hungtrinh2001/docx-merger.git"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
   "keywords": [
     "docx",
-    "composition",
-    "document",
+    "docx-merger",
+    "merge docx",
+    "word",
+    "openxml",
     "office",
-    "docx merge",
-    "microsoft word"
+    "document",
+    "composition"
   ],
   "author": "Hung Trinh <killdate123456@gmail.com>",
   "dependencies": {
-    "@xmldom/xmldom": "^0.8.6",
+    "@xmldom/xmldom": "^0.8.10",
     "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "bugs": {
     "url": "https://github.com/hungtrinh2001/docx-merger/issues"
   },
-  "homepage": "https://github.com/hungtrinh2001/docx-merger#readme",
-  "devDependencies": {
-    "esbuild": "^0.16.5",
-    "rimraf": "^2.7.1"
-  },
-  "engines": {
-    "yarn": "YARN NO LONGER USED - use npm instead."
-  }
+  "homepage": "https://github.com/hungtrinh2001/docx-merger#readme"
 }

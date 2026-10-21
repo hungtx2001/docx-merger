@@ -1,69 +1,133 @@
 # Docx-merger
 
-Javascript Library for Merging Docx files.
-This is a fork of https://github.com/scholarcy/docx-merge with updated dependencies.
+A fast, reliable JavaScript/TypeScript library for merging DOCX files with full OpenXML schema compliance, preserving styles, numbering/bullets, images/media, headers/footers, and section orientations.
 
-It's only been tested with NodeJS but according to the original authors it should work in the browser too.
+Works seamlessly in **Node.js**, **modern browsers**, and edge environments.
 
-The fork has replaced webpack with esbuild as the build tool, and yarn for npm.
+---
 
-## Purpose
+## ✨ Features
 
-To merge docx file using javascript which has rich contents.
+- **Reliable OpenXML Compliance:** Remaps all Relationship IDs (`rId`), Numbering IDs (`numId`, `abstractNumId`), and media assets without collisions or XML schema corruption.
+- **Full Media & Image Preservation:** Retains embedded images, figures, and charts across all merged documents.
+- **Preserves Numbering & Bullets:** Eliminates duplicate `w:numId` tags that trigger Microsoft Word's *"unreadable content"* error.
+- **Section & Layout Preservation:** Preserves page orientations (Portrait / Landscape), margins, and headers/footers per document.
+- **Browser & Node.js Compatible:** Zero Node.js-only core dependencies (uses browser-safe path parsing and pure JSZip/XML-DOM).
+- **TypeScript Support:** Includes complete TypeScript definitions out of the box (`.d.ts`).
+- **Modern Async/Await API:** Fast, promise-based API with backwards-compatible methods.
 
-The Library Preserves the Styles, Tables, Images, Bullets and Numberings of input files.
+---
 
-## Table of Contents
+## 📦 Installation
 
-1. [Installation](#installation)
-2. [Usage Nodejs](#usage-nodejs)
-3. [Usage Browser](#usage-browser)
-4. [TODO](#todo)
-5. [Known Issues](#known-issues)
+```bash
+npm install @hungtrinh2001/docx-merger
+```
 
-## Installation
+---
 
-  ```bash
-  npm install @scholarcy/docx-merger
-  ```
+## 🚀 Usage
 
-**[Back to top](#table-of-contents)**
+### ESM / TypeScript (Recommended)
 
-### Usage in Nodejs
+```typescript
+import DocxMerger from '@hungtrinh2001/docx-merger';
+// or: import { DocxMerger } from '@hungtrinh2001/docx-merger';
+import * as fs from 'fs';
 
-Read input files as binary and pass it to the `DocxMerger` constructor fuction as a array of files.
+async function mergeDocs() {
+  const file1 = fs.readFileSync('document1.docx');
+  const file2 = fs.readFileSync('document2.docx');
 
-Then call the save function with first argument as `nodebuffer`, check the example below.
+  const merger = new DocxMerger();
+  
+  // Merge multiple files with options
+  await merger.merge([file1, file2], {
+    pageBreak: true // Insert page break between files (default: true)
+  });
 
-  ```javascript
-  const DocxMerger = require('./../src/index');
+  // Save as Node.js Buffer
+  const outputBuffer = await merger.save('nodebuffer');
+  fs.writeFileSync('merged.docx', outputBuffer);
+}
+```
 
+### CommonJS (CJS)
+
+```javascript
+const { DocxMerger } = require('@hungtrinh2001/docx-merger');
 const fs = require('fs');
-const path = require('path');
 
 (async () => {
-  const file1 = fs.readFileSync(path.resolve(__dirname, 'template.docx'), 'binary');
-  const file2 = fs.readFileSync(path.resolve(__dirname, 'template1.docx'), 'binary');
+  const file1 = fs.readFileSync('document1.docx');
+  const file2 = fs.readFileSync('document2.docx');
 
-  const docx = new DocxMerger();
-  await docx.initialize({}, [file1, file2]);
-  const data = await docx.save('nodebuffer');
-  fs.writeFileSync("output.docx", data);
-})()
-  ```
+  const merger = new DocxMerger();
+  await merger.merge([file1, file2], { pageBreak: true });
 
-**[Back to top](#table-of-contents)**
+  const outputBuffer = await merger.save('nodebuffer');
+  fs.writeFileSync('merged.docx', outputBuffer);
+})();
+```
 
-### TODO
+### Browser Usage
 
-- CLI Support
-- Unit Tests
-- ES6 Conversion
+```javascript
+import DocxMerger from '@hungtrinh2001/docx-merger';
 
-**[Back to top](#table-of-contents)**
+async function handleMerge(fileBlob1, fileBlob2) {
+  const buffer1 = await fileBlob1.arrayBuffer();
+  const buffer2 = await fileBlob2.arrayBuffer();
 
-### Known Issues
+  const merger = new DocxMerger();
+  await merger.merge([buffer1, buffer2], { pageBreak: true });
 
-- Microsoft Word in windows Shows some error due to numbering.
+  const blob = await merger.save('blob');
+  
+  // Download or preview the blob in browser
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'merged.docx';
+  a.click();
+}
+```
 
-**[Back to top](#table-of-contents)**
+---
+
+## ⚙️ Options
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `pageBreak` | `boolean` | `true` | Inserts a section page break between merged documents. If `false`, documents flow continuously. |
+| `style` | `'source' \| 'target'` | `'source'` | Precedence strategy for styles. |
+
+### Supported Output Formats (`save(type)`)
+
+- `'nodebuffer'` (Node.js `Buffer`)
+- `'blob'` (Browser `Blob`)
+- `'uint8array'` (`Uint8Array`)
+- `'arraybuffer'` (`ArrayBuffer`)
+- `'base64'` (`string`)
+
+---
+
+## 🧪 Testing
+
+Run the automated unit test suite:
+
+```bash
+npm test
+```
+
+Build production bundles:
+
+```bash
+npm run build
+```
+
+---
+
+## 📄 License
+
+Apache-2.0
